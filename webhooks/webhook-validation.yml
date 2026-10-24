@@ -1,0 +1,39 @@
+name: Webhook JSON Validation and Dispatch
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-and-dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Detect changed JSON files
+        id: changes
+        run: |
+          echo "files=$(git diff --name-only origin/main...HEAD | grep '^webhooks/.*\.json$')" >> $GITHUB_OUTPUT
+
+      - name: Install AJV (JSON schema validator)
+        run: npm install -g ajv-cli
+
+      - name: Validate JSON files
+        if: steps.changes.outputs.files != ''
+        run: |
+          for file in ${{ steps.changes.outputs.files }}; do
+            echo "Validating $file"
+            ajv validate -s schema/webhook-schema.json -d $file
+          done
+
+      - name: Call Microservice
+        if: steps.changes.outputs.files != ''
+        run: |
+          for file in ${{ steps.changes.outputs.files }}; do
+            echo "Dispatching $file to microservice"
+            curl -X POST https://webhook.site/48f6fad3-c85d-420d-a7ae-331bb2fdfaf2 \
+              -H "Content-Type: application/json" \
+              -d @$file
+          done

@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WebhookDefinition",
+  "type": "object",
+  "properties": {
+    "scope": {
+      "type": "string",
+      "enum": ["REPO", "ORG", "ENTERPRISE"],
+      "description": "Level at which webhook is created"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Owner of the repo/org (GitHub username or org name)"
+    },
+    "repository": {
+      "type": "string",
+      "description": "Repository name (required if scope=REPO)"
+    },
+    "organization": {
+      "type": "string",
+      "description": "Organization name (required if scope=ORG)"
+    },
+    "enterpriseId": {
+      "type": "string",
+      "description": "Enterprise identifier (required if scope=ENTERPRISE)"
+    },
+    "webhooks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "payloadUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Target service URL provided by developer"
+          },
+          "events": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "GitHub events to subscribe to"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional human-readable description"
+          }
+        },
+        "required": ["payloadUrl", "events"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["scope", "webhooks"],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": { "properties": { "scope": { "const": "REPO" } } },
+      "then": { "required": ["owner", "repository"] }
+    },
+    {
+      "if": { "properties": { "scope": { "const": "ORG" } } },
+      "then": { "required": ["organization"] }
+    },
+    {
+      "if": { "properties": { "scope": { "const": "ENTERPRISE" } } },
+      "then": { "required": ["enterpriseId"] }
+    }
+  ]
+}
