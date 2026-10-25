@@ -2,11 +2,13 @@ name: Webhook JSON Validation and Dispatch
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
+    paths:
+      - 'webhooks/*.json'
   push:
-    branches:
-      - main
+    branches: [ main ]
+    paths:
+      - 'webhooks/*.json'
 
 jobs:
   validate-and-dispatch:
@@ -18,7 +20,7 @@ jobs:
       - name: Detect changed JSON files
         id: changes
         run: |
-          echo "files=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.sha }} | grep '^webhooks/.*\.json$')" >> $GITHUB_OUTPUT
+          echo "files=$(jq -r '.pull_request.head.sha' <<< '${{ toJson(github.event) }}')" >> $GITHUB_OUTPUT
 
       - name: Install AJV (JSON schema validator)
         run: npm install -g ajv-cli
