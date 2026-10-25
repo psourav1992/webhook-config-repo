@@ -11,7 +11,7 @@
     {
       "payloadUrl": "https://analytics.example.com/collect",
       "events": ["issues", "issue_comment"],
-      "description": "Analytics webhook2"
+      "description": "Analytics webhook22"
     }
   ]
 }
