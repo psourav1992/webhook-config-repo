@@ -1,6 +1,6 @@
 {
   "scope": "REPO",
-  "repository": "repo4",
+  "repository": "repo5",
   "webhooks": [
     {
       "payloadUrl": "https://external-service.example.com/events",
