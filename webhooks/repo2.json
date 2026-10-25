@@ -1,0 +1,12 @@
+{
+  "scope": "REPO",
+  "owner": "my-org",
+  "repository": "repo1",
+  "webhooks": [
+    {
+      "payloadUrl": "https://external-service.example.com/events",
+      "events": ["push", "pull_request"],
+      "description": "CI/CD integration webhook"
+    }
+  ]
+}
