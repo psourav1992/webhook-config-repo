@@ -25,7 +25,7 @@ jobs:
         run: |
           for file in ${{ steps.changes.outputs.files }}; do
             echo "Validating $file"
-            ajv validate -s schema/webhook-schema.json -d $file
+            ajv validate -s schema/webhook-schema.json -d $file --strict --errors=json || exit 1
           done
 
       - name: Call Microservice
