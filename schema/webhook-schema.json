@@ -32,7 +32,6 @@
         "properties": {
           "payloadUrl": {
             "type": "string",
-            "format": "uri",
             "description": "Target service URL provided by developer"
           },
           "events": {
