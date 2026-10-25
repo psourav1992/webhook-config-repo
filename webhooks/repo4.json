@@ -1,9 +1,8 @@
 {
   "scope": "REPO",
-  "repository": "repo5",
+  "repository": "repo17",
   "webhooks": [
     {
-      "payloadUrl": "https://external-service.example.com/events",
       "events": ["push", "pull_request"],
       "description": "CI/CD integration webhook"
     }
