@@ -1,0 +1,10 @@
+{
+  "scope": "REPO",
+  "repository": "repo17",
+  "webhooks": [
+    {
+      "events": ["push", "pull_request"],
+      "description": "CI/CD integration webhook"
+    }
+  ]
+}
