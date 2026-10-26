@@ -1,0 +1,11 @@
+{
+  "scope": "ORG",
+  "organization": "my-org",
+  "webhooks": [
+    {
+      "payloadUrl": "https://service.example.com/org-events",
+      "events": ["issues", "issue_comment"],
+      "description": "Organization-wide webhook for analytics"
+    }
+  ]
+}
