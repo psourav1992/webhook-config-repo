@@ -1,5 +1,6 @@
 {
   "scope": "REPO",
+  "owner": "my-org",
   "repository": "repo1",
   "webhooks": [
     {
