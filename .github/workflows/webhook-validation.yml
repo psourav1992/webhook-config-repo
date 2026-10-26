@@ -32,16 +32,11 @@ jobs:
         run: npm install -g ajv-cli
 
       - name: Validate JSON files
-        if: steps.changes.outputs.files != ''
         run: |
-          for file in ${{ steps.changes.outputs.files }}; do
+          while IFS= read -r file; do
             echo "Validating $file"
-            ajv validate -s schema/webhook-schema.json -d $file --strict --errors=json
-            if [ $? -ne 0 ]; then
-              echo "Validation failed for $file"
-              exit 1
-            fi
-          done
+            ajv validate -s schema/webhook-schema.json -d "$file" --strict --errors=json || exit 1
+          done <<< "${{ steps.changes.outputs.files }}"
 
       - name: Call Microservice (or Dummy URL for now)
         if: steps.changes.outputs.files != ''
