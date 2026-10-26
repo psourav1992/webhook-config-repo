@@ -2,8 +2,13 @@ name: Webhook JSON Validation and Dispatch
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
+    paths:
+      - 'webhooks/*.json'
+  push:
+    branches: [ main ]
+    paths:
+      - 'webhooks/*.json'
 
 jobs:
   validate-and-dispatch:
@@ -11,29 +16,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Detect changed JSON files
         id: changes
         run: |
-          echo "files=$(git diff --name-only origin/main...HEAD | grep '^webhooks/.*\.json$')" >> $GITHUB_OUTPUT
+          {
+            echo 'files<<EOF'
+            git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.sha }} | grep '^webhooks/.*\.json$'
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
 
       - name: Install AJV (JSON schema validator)
         run: npm install -g ajv-cli
 
       - name: Validate JSON files
-        if: steps.changes.outputs.files != ''
         run: |
-          for file in ${{ steps.changes.outputs.files }}; do
+          while IFS= read -r file; do
             echo "Validating $file"
-            ajv validate -s schema/webhook-schema.json -d $file
-          done
+            ajv validate -s schema/webhook-schema.json -d "$file" --strict --errors=json || exit 1
+          done <<< "${{ steps.changes.outputs.files }}"
 
-      - name: Call Microservice
+      - name: Call Microservice (or Dummy URL for now)
         if: steps.changes.outputs.files != ''
         run: |
           for file in ${{ steps.changes.outputs.files }}; do
-            echo "Dispatching $file to microservice"
-            curl -X POST https://webhook.site/48f6fad3-c85d-420d-a7ae-331bb2fdfaf2 \
+            echo "Dispatching $file"
+            curl -X POST https://httpbin.org/post \
               -H "Content-Type: application/json" \
               -d @$file
           done

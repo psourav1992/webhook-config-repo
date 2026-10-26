@@ -1,0 +1,11 @@
+{
+  "scope": "ENTERPRISE",
+  "enterpriseId": "enterprise-123",
+  "webhooks": [
+    {
+      "payloadUrl": "https://service.example.com/enterprise-events",
+      "events": ["repository", "member"],
+      "description": "Enterprise-level webhook for governance"
+    }
+  ]
+}

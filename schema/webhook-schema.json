@@ -32,7 +32,6 @@
         "properties": {
           "payloadUrl": {
             "type": "string",
-            "format": "uri",
             "description": "Target service URL provided by developer"
           },
           "events": {
@@ -56,17 +55,33 @@
   "required": ["scope", "webhooks"],
   "additionalProperties": false,
   "allOf": [
-    {
-      "if": { "properties": { "scope": { "const": "REPO" } } },
-      "then": { "required": ["owner", "repository"] }
-    },
-    {
-      "if": { "properties": { "scope": { "const": "ORG" } } },
-      "then": { "required": ["organization"] }
-    },
-    {
-      "if": { "properties": { "scope": { "const": "ENTERPRISE" } } },
-      "then": { "required": ["enterpriseId"] }
+  {
+    "if": { "properties": { "scope": { "const": "REPO" } } },
+    "then": {
+      "properties": {
+        "owner": { "type": "string" },
+        "repository": { "type": "string" }
+      },
+      "required": ["owner", "repository"]
     }
-  ]
+  },
+  {
+    "if": { "properties": { "scope": { "const": "ORG" } } },
+    "then": {
+      "properties": {
+        "organization": { "type": "string" }
+      },
+      "required": ["organization"]
+    }
+  },
+  {
+    "if": { "properties": { "scope": { "const": "ENTERPRISE" } } },
+    "then": {
+      "properties": {
+        "enterpriseId": { "type": "string" }
+      },
+      "required": ["enterpriseId"]
+    }
+  }
+]
 }
